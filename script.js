@@ -1,7 +1,13 @@
 const currentPlayer = document.querySelector(".currentPlayer")
 
-let selected;
-let player = "X";
+// este objeto mapeia os simbulos X E O para o caminho dos escudos 
+const symbols = {
+    X: "imagens/Escudo Inter.png",
+    O: "imagens/Escudo gremi.png"
+}
+
+let selected; // esta array guarda as jogadas
+let player = "X"; // define qual jogador inicia a partida
 
 // esta variavel armazena as posisões possiveis para ter um ganhador
 let positions = [
@@ -30,19 +36,20 @@ init();
 
 function newMove(e) {
     const index = e.target.getAttribute("data-i");
-    e.target.innerHTML = player;
-      e.target.innerHTML = player;
-  e.target.removeEventListener("click", newMove);
-  selected[index] = player;
+    //e.target.innerHTML = player;
+    e.target.innerHTML = `<img src="${symbols[player]}" class="shield">`;
+    e.target.removeEventListener("click", newMove); // não deixa o clicar para que o jogador não possa clicar 2x no mesmo lugar 
+    selected[index] = player; // Salva no array 'selected' que o jogador atual ocupou aquele índice
+
+    // Aguarda 100ms antes de verificar o resultado para dar tempo da imagem aparecer na tela
+    setTimeout(() => {
+        check();
+        //}, [100])
+    }, 100)
+
+    player = player === "X" ? "O" : "X";
+    currentPlayer.innerHTML = `JOGADOR DA VEZ: ${player}`;
 }
-
-setTimeout(() => {
-    check();
-
-}, [100])
-
-player = player === "X" ? "O" : "X";
-currentPlayer.innerHTML = `JOGADOR DA VEZ: ${player}`;
 
 function check() {
     let playerLastMove = player === "X" ? "O" : "X";
@@ -52,6 +59,8 @@ function check() {
         .filter((item) => item[0] === playerLastMove)
         .map((item) => item[1])
 
+
+    // Se todos os 9 espaços estiverem preenchidos e ninguém ganhou, dá empate
     for (pos of positions) {
         if (pos.every((item) => items.includes(item))) {
             alert("o JOGADOR '" + playerLastMove + "' GANHOU!")
@@ -59,10 +68,10 @@ function check() {
             return;
         }
     }
-if (selected.filter((item) => item).length === 9){
-    alert("DEU EMPATE!")
-    init()
-    return;
-}
+    if (selected.filter((item) => item).length === 9) {
+        alert("DEU EMPATE!")
+        init()
+        return;
+    }
 
 }
